@@ -1,5 +1,5 @@
 import tkinter
-
+#comment By Krishna 
 root = tkinter.Tk()
 values = "0"
 temp=""
