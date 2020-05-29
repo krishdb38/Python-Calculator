@@ -1,0 +1,81 @@
+import pandas as pd
+
+## This is for Excel AUTOMATION AND FILL THE COLOR
+import openpyxl
+
+
+
+## Function to change
+def split_intervar(input_str):
+    
+    """This Function split text information and find each Position
+    The file size is so, do with this long process. Working Properly"""
+    output_str = input_str[1:-126]  # We count From Minus Because of the indexing
+    # If we count from First indexing may change
+    pvs = input_str[-126:-120]
+
+    if pvs[-1] != "0":
+        output_str += pvs[:3] + pvs[-1]
+        # Assuming Different pVS Values
+
+    #Add pvs info to output_str
+
+
+    ps = input_str[-115:-102].split(", ") # Directly change to List Format <, >space
+    for i,j  in enumerate(ps,start=1):
+        if j == "1": # with space in sample
+            #print("%s"%i, end=(" "))
+            output_str += ", PS%d"%i
+        
+    PM = input_str[-96:-77].split(", ") # Split with ", " <, and single space.>
+    for i,j  in enumerate(PM, start=1):
+        if j == "1": # with space in sample
+            #print("%s"%i, end=(" "))
+            output_str += ", PM%d"%i
+        
+    PP = input_str[-71:-55].split(", ")  # These Values are calculated using manual test
+    for i,j  in enumerate(PP,start=1):
+        if j == "1": # with space in sample
+            #print("%s"%i, end=(" "))
+            #print(i)
+            output_str += ", PP%d"%i
+
+    BA1 = input_str[-53:-48]
+    if BA1[-1] != "0":
+        output_str += ", " + BA1[:2] + BA1[-1]
+
+    BS = input_str[-43:-30].split(", ") # These Values are tested Manualluy
+    for i,j  in enumerate(BS,start=1):
+        if j == "1": # with space in sample
+        #print("%s"%i, end=(" "))
+        #print(i)
+            output_str += ", BS%d"%i
+
+    BP = input_str[-24:-2].split(", ")
+    for i,j  in enumerate(BP,start=1):
+        if j == "1": # with space in sample
+            #print("%s"%i, end=(" "))
+            #print(i)
+            output_str += ", BP%d"%i
+    return output_str
+
+### Main Job starts here
+wb = openpyxl.load_workbook("Merged_vcf/preterm_ogi.xlsx")
+sheet_name = wb.sheetnames
+
+## File name and Location can be changed
+for _ in sheet_name:
+    df =  pd.read_excel("Merged_vcf/preterm_ogi.xlsx", sheet_name= _)
+    wtiter = pd.ExcelWriter("Inter_var_krish.xlsx", engine= "xlsxwriter")
+    if df.shape[1] > 20:
+        df["Intervar_"] = df["intervar_intervar_and_evidence"]\
+            .apply(lambda x : split_intervar(x) )
+        #df.columns = new_col 
+        df.to_excel(writer, sheet_name = _)
+        print("Done", _)
+    else:
+        print("Skipping", _)
+    writer.save()
+
+
+## Check file in saved location
