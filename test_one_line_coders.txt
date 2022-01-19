@@ -1,0 +1,4 @@
+hello 
+this is a python developer from South Korea.
+Originally from Nepal
+cyurrently doing Data Science related works and Bio informatics.
